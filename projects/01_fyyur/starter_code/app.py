@@ -20,8 +20,31 @@ app = Flask(__name__)
 moment = Moment(app)
 app.config.from_object('config')
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 # TODO: connect to a local postgresql database
+
+#----------------------------------------------------------------------------#
+# Helpers and Filters
+#----------------------------------------------------------------------------#
+
+def get_venue(venue_id):
+  return Venue.query.get(venue_id)
+
+def get_artist(artist_id):
+  return Artist.query.get(artist_id)
+
+def venue_past_shows(venue_id):
+  return Show.query.filter(Show.start_time < datetime.now(), Show.venue_id == venue_id).all()
+
+def venue_upcoming_shows(venue_id):
+  return Show.query.filter(Show.start_time > datetime.now(), Show.venue_id == venue_id).all()
+
+def artist_past_shows(artist_id):
+  return Show.query.filter(Show.start_time < datetime.now(), Show.artist_id == artist_id).all()
+
+def artist_upcoming_shows(artist_id):
+  return Show.query.filter(Show.start_time > datetime.now(), Show.artist_id == artist_id).all()
 
 #----------------------------------------------------------------------------#
 # Models.
